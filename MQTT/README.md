@@ -1,8 +1,9 @@
 # MQTT 
 =========================================================
 
-Prasyarat singkat
-- Jalankan broker MQTT (service `mqtt-broker` di docker-compose) sebelum subscriber/publisher.
+Jalankan broker MQTT (service `mqtt-broker` di docker-compose) sebelum subscriber/publisher.
+
+<img src="https://i.imgur.com/ywNsJDt.png" width="400">
 
 Alur 
 1. Publisher (`pub.py`) membuat klien MQTT dan memanggil `client.connect(broker, port, keepalive=60)` untuk tersambung ke broker.
@@ -10,7 +11,7 @@ Alur
 3. Subscriber (`sub.py`) membuat klien MQTT, memanggil `client.connect(broker, port, keepalive=60)`, lalu `client.subscribe(topic)` untuk mendaftar topik.
 4. Subscriber menjalankan `client.loop_forever()` sehingga callback `on_message` dipanggil setiap broker mendorong pesan ke client. Di dalam `on_message`, program menjalankan `print(message.payload.decode())` untuk menampilkan pesan.
 
-Baris kode yang dieksekusi (potongan yang penting)
+Baris kode yang dieksekusi 
 - `pub.py` (konstruk utama):
 ```python
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
@@ -20,6 +21,7 @@ while True:
 	client.publish(topic, message)   # <- baris yang mengirim pesan ke broker
 	time.sleep(1)
 ```
+
 
 - `sub.py` (konstruk utama):
 ```python
@@ -34,7 +36,9 @@ def on_message(client, userdata, message, properties=None):
 ```
 
 output yang dihasilkan
-https://imgur.com/gallery/mqtt-6O9yd7t#DMJBeoK
+
+<img src="https://i.imgur.com/DMJBeoK.png" width="400">
+
 - Terminal publisher (`pub.py`) saat berjalan:
 ```
 Menghubungkan ke mqtt-broker...
@@ -42,7 +46,8 @@ Published: Suhu: 28°C
 Published: Suhu: 28°C
 Published: Suhu: 28°C
 ```
-https://imgur.com/gallery/mqtt-6O9yd7t#Ot7ZywV
+<img src="https://i.imgur.com/Ot7ZywV.png" width="400">
+
 - Terminal subscriber (`sub.py`) saat berjalan:
 ```
 Menghubungkan ke mqtt-broker...
@@ -52,11 +57,13 @@ Suhu: 28°C
 Suhu: 28°C
 ```
 
-Catatan operasional singkat
+
 - Jalankan broker dulu (docker compose), kemudian subscriber, terakhir publisher agar subscriber tidak kehilangan pesan awal.
 - Jika ingin mengubah alamat broker, ubah variabel `broker` di kedua file.
 
-Kemudian berikut hasil Wireshark 
-https://imgur.com/gallery/mqtt-6O9yd7t#BMGhJTV
+Berikut hasil capture lalu lintas data menggunakan Wireshark
+
+<img src="https://i.imgur.com/BMGhJTV.png"> 
+
 
 
